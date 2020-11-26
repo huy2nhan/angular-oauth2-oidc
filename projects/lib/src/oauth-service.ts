@@ -90,7 +90,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
    * The received (passed around) state, when logging
    * in with implicit flow.
    */
-  public state?= '';
+  public state? = '';
 
   protected eventsSubject: Subject<OAuthEvent> = new Subject<OAuthEvent>();
   protected discoveryDocumentLoadedSubject: Subject<
@@ -149,7 +149,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
     } catch (e) {
       console.error(
         'No OAuthStorage provided and cannot access default (sessionStorage).' +
-        'Consider providing a custom OAuthStorage implementation in your module.',
+          'Consider providing a custom OAuthStorage implementation in your module.',
         e
       );
     }
@@ -231,12 +231,15 @@ export class OAuthService extends AuthConfig implements OnDestroy {
             shouldRunSilentRefresh = false;
           }
         }),
-        filter((e: OAuthInfoEvent) => e.type === 'token_expires' && (listenTo == null || listenTo === 'any' || e.info === listenTo)),
+        filter(e => e.type === 'token_expires'),
         debounceTime(1000)
       )
       .subscribe(e => {
         const event = e as OAuthInfoEvent;
-        if (shouldRunSilentRefresh) {
+        if (
+          (listenTo == null || listenTo === 'any' || event.info === listenTo) &&
+          shouldRunSilentRefresh
+        ) {
           // this.silentRefresh(params, noPrompt).catch(_ => {
           this.refreshInternal(params, noPrompt).catch(_ => {
             this.debug('Automatic silent refresh did not work');
@@ -315,7 +318,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
     if (!issuerCheck) {
       errors.push(
         'Every url in discovery document has to start with the issuer url.' +
-        'Also see property strictDiscoveryDocumentValidation.'
+          'Also see property strictDiscoveryDocumentValidation.'
       );
     }
 
@@ -666,7 +669,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
     if (this.sessionChecksEnabled && !doc.check_session_iframe) {
       this.logger.warn(
         'sessionChecksEnabled is activated but discovery document' +
-        ' does not contain a check_session_iframe field'
+          ' does not contain a check_session_iframe field'
       );
     }
 
@@ -825,7 +828,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
               tokenResponse.access_token,
               tokenResponse.refresh_token,
               tokenResponse.expires_in ||
-              this.fallbackAccessTokenExpirationTimeInSec,
+                this.fallbackAccessTokenExpirationTimeInSec,
               tokenResponse.scope,
               this.extractRecognizedCustomParameters(tokenResponse)
             );
@@ -912,7 +915,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
               tokenResponse.access_token,
               tokenResponse.refresh_token,
               tokenResponse.expires_in ||
-              this.fallbackAccessTokenExpirationTimeInSec,
+                this.fallbackAccessTokenExpirationTimeInSec,
               tokenResponse.scope,
               this.extractRecognizedCustomParameters(tokenResponse)
             );
@@ -1756,7 +1759,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
               tokenResponse.access_token,
               tokenResponse.refresh_token,
               tokenResponse.expires_in ||
-              this.fallbackAccessTokenExpirationTimeInSec,
+                this.fallbackAccessTokenExpirationTimeInSec,
               tokenResponse.scope,
               this.extractRecognizedCustomParameters(tokenResponse)
             );
@@ -1863,8 +1866,8 @@ export class OAuthService extends AuthConfig implements OnDestroy {
     if (this.sessionChecksEnabled && !sessionState) {
       this.logger.warn(
         'session checks (Session Status Change Notification) ' +
-        'were activated in the configuration but the id_token ' +
-        'does not contain a session_state claim'
+          'were activated in the configuration but the id_token ' +
+          'does not contain a session_state claim'
       );
     }
 
@@ -2403,7 +2406,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
    */
   public createAndSaveNonce(): Promise<string> {
     const that = this;
-    return this.createNonce().then(function (nonce: any) {
+    return this.createNonce().then(function(nonce: any) {
       // Use localStorage for nonce if possible
       // localStorage is the only storage who survives a
       // redirect in ALL browsers (also IE)
